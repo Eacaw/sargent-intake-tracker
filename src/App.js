@@ -1,10 +1,12 @@
-import logo from "./logo.svg";
 import "./App.css";
 
-// Import the functions you need from the SDKs you need
+// Pages Import
+import { Login, Feed, Home, Register } from "./Pages/Pages";
+
+// Firebase Imports
 import { initializeApp } from "firebase/app";
-import { getAnalytics, logEvent } from "firebase/analytics";
-import { useState } from "react";
+import { getAnalytics } from "firebase/analytics";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAS14w3U9TEs6F61tDfOaGeKHxbifyNSQw",
@@ -21,31 +23,16 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  function logButtonClick() {
-    setCount(count + 1);
-    logEvent(analytics, "buttonClicked", {
-      name: "button_clicked",
-      value: count,
-    });
-  }
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Sargent Intake tracker coming soon!</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <button onClick={logButtonClick}>Clicked {count} times</button>
-      </header>
+    <div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/feed" element={<Feed />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

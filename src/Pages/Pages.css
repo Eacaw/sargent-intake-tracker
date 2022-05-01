@@ -1,0 +1,26 @@
+.center-align-cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.top-padding-navbar{
+    padding-top: 80px;
+}
+
+.border-rounded {
+    border-radius: 15px;
+}
+
+.top-border-rounded {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.margin-xsml {
+    margin: 5px;
+}
+
+.margin-sml {
+    margin: 10px;
+}
