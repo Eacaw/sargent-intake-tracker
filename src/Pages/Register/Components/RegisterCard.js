@@ -19,12 +19,16 @@ function RegisterCard() {
 
   function createNewUser() {
     console.log("Registers");
-    createUserWithEmailAndPassword(getAuth(), email, password).then(
-      (userCredential) => {
+    createUserWithEmailAndPassword(getAuth(), email, password)
+      .then((userCredential) => {
         console.log("gotCredentials");
         user = userCredential.user;
-      }
-    );
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          alert("Email already in use");
+        }
+      });
   }
 
   return (
