@@ -1,0 +1,22 @@
+.day-card-layout {
+    min-width: 90%;
+    max-width: 90%;
+    height: 200px;
+}
+
+.flex-center{
+    display: flex;
+    justify-content: center;
+}
+
+.grid-doughnuts {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-gap: 10px;
+    margin: 10px
+}
+
+.graph-backgrounds {
+    background-color: #3ca8e7;
+}
+

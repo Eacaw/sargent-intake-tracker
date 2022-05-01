@@ -18,10 +18,8 @@ function RegisterCard() {
   const [password, setPassword] = useState("");
 
   function createNewUser() {
-    console.log("Registers");
     createUserWithEmailAndPassword(getAuth(), email, password)
       .then((userCredential) => {
-        console.log("gotCredentials");
         user = userCredential.user;
       })
       .catch((error) => {

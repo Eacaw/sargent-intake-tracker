@@ -74,15 +74,6 @@ function LoginCard() {
           rounded
           size="sm"
           color="primary"
-          href="/register"
-          className="margin-xsml"
-        >
-          Register
-        </MDBBtn>
-        <MDBBtn
-          rounded
-          size="sm"
-          color="primary"
           onClick={signInWithEmail}
           className="margin-xsml"
         >
@@ -92,11 +83,22 @@ function LoginCard() {
           rounded
           size="sm"
           color="primary"
+          href="/register"
+          className="margin-xsml"
+        >
+          Register
+        </MDBBtn>
+
+        {/* <MDBBtn
+          // Temporarily disabled while bugs are being resolved
+          rounded
+          size="sm"
+          color="primary"
           onClick={signInWithGoogle}
           className="margin-xsml"
         >
           <FaGoogle />
-        </MDBBtn>
+        </MDBBtn> */}
       </MDBCardBody>
     </MDBCard>
   );

@@ -41,7 +41,6 @@ const Login = (props) => {
 
   useEffect(() => {
     if (user) {
-      console.log("user changes");
       user.reload().then(() => {
         setRefreshedUser(getAuth().currentUser);
       });
