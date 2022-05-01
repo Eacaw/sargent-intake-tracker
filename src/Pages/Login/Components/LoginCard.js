@@ -32,8 +32,7 @@ function LoginCard() {
 
   const signInWithEmail = (event) => {
     event.preventDefault();
-    const email = document.getElementById("emailAddress").value;
-    const password = document.getElementById("password").value;
+
     signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
       const user = userCredential.user;
     });

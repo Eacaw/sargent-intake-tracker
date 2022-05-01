@@ -3,6 +3,9 @@ import "./App.css";
 // Pages Import
 import { Login, Feed, Home, Register } from "./Pages/Pages";
 
+// Common Components Imports
+import Navbar from "./Components/Navbar";
+
 // Firebase Imports
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -25,6 +28,7 @@ const analytics = getAnalytics(app);
 function App() {
   return (
     <div>
+      <Navbar />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
