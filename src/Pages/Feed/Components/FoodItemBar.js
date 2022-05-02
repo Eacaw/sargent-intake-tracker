@@ -6,7 +6,7 @@ import {
   MDBTableBody,
 } from "mdb-react-ui-kit";
 import React, { useEffect, useState } from "react";
-import { fetchFoodItemData } from "./utilities/calculations";
+import { fetchFoodItemData } from "./utilities/data";
 
 function FoodItemBar(props) {
   const [foodItemData, setFoodItemData] = useState({});
@@ -40,7 +40,7 @@ function FoodItemBar(props) {
       <MDBRow
         style={{
           textAlign: "left",
-          margin: "0.1rem",
+          margin: "2px",
           verticalAlign: "middle",
         }}
       >

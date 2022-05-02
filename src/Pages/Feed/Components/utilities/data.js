@@ -5,7 +5,6 @@ export async function fetchFoodItemData(foodItemId) {
   const foodItemRef = doc(db, "food-items", foodItemId);
   const foodItemSnap = await getDoc(foodItemRef);
   const foodItem = foodItemSnap.data();
-  // console.log("foodItem: " + JSON.stringify(foodItem));
 
   return {
     name: foodItem.name,

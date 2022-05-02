@@ -1,6 +1,6 @@
 export const iconMap = {
   key: "🔑",
-  snack: "🍪",
+  snack: "🍫",
   breakfast: "🥣",
   lunch: "🥪",
   dinner: "🍽️",

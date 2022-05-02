@@ -17,7 +17,7 @@ function Navbar() {
   }
 
   return (
-    <MDBNavbar sticky light bgColor="light">
+    <MDBNavbar fixed expand="lg" light bgColor="light">
       <MDBContainer fluid>
         <MDBNavbarBrand href="#">Sargent Intake Tracker</MDBNavbarBrand>
         {user ? <MDBBtn onClick={logout}>Log out</MDBBtn> : null}

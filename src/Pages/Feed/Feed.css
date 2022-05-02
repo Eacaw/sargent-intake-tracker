@@ -7,16 +7,25 @@
 .flex-center{
     display: flex;
     justify-content: center;
+    width: 100%;
+    text-align: center;
 }
 
+.flex-item {
+    margin: auto;
+ }
+
 .grid-doughnuts {
-    display: grid;
-    grid-template-columns: 25% 25% 25% 25%;
-    grid-gap: 10px;
-    margin: 10px
+    display: flex;
+    justify-content: space-between;
 }
 
 .graph-backgrounds {
     background-color: #3ca8e7;
 }
 
+.right-align-btn {
+    margin-left: auto;
+    margin-right: 0;
+    float: right;
+}

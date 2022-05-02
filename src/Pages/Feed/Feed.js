@@ -2,6 +2,7 @@ import { getAuth } from "firebase/auth";
 import {
   collection,
   getFirestore,
+  onSnapshot,
   orderBy,
   query,
   where,
@@ -12,26 +13,32 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import DayCard from "./Components/DayCard";
 
-function Feed() {
+function Feed(props) {
   const [showSpinner, setShowSpinner] = useState(true);
-  const [user] = useAuthState(getAuth());
-  const [userId, setUserId] = useState(null);
   const db = getFirestore();
 
   const cardDataRef = collection(db, "day-card-data");
   const limitsRef = collection(db, "maximum-intake-by-day");
+  const foodItemsRef = collection(db, "food-items");
 
-  let q = query(cardDataRef, orderBy("date", "desc"));
+  let q = query(
+    cardDataRef,
+    orderBy("date", "desc"),
+    where("userId", "==", props.userId)
+  );
   let q2 = query(limitsRef, orderBy("index", "asc"));
+  let q3 = query(foodItemsRef, orderBy("name", "asc"));
 
   const [cards] = useCollectionData(q);
   const [limits] = useCollectionData(q2);
+  const [foodItems] = useCollectionData(q3);
 
+  // Handle showing a spinner when still loading data
   useEffect(() => {
-    if (cards) {
+    if (cards && foodItems && limits) {
       setShowSpinner(false);
     }
-  }, [cards]);
+  }, [cards, foodItems, limits]);
 
   return showSpinner ? (
     <div className="center-align-cards">
@@ -44,7 +51,13 @@ function Feed() {
           cards.map((card, idx) => {
             return (
               <MDBCol key={idx} size="12">
-                <DayCard key={idx} card={card} limits={limits} />
+                <DayCard
+                  key={idx}
+                  userId={props.userId}
+                  card={card}
+                  limits={limits}
+                  foodItems={foodItems}
+                />
               </MDBCol>
             );
           })}

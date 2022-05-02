@@ -10,6 +10,9 @@ import Navbar from "./Components/Navbar";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getAuth } from "firebase/auth";
+import { useEffect, useState } from "react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAS14w3U9TEs6F61tDfOaGeKHxbifyNSQw",
@@ -26,6 +29,25 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
 function App() {
+  const [user] = useAuthState(getAuth());
+  const [refreshedUser, setRefreshedUser] = useState(null);
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      user.reload().then(() => {
+        setRefreshedUser(getAuth().currentUser);
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (refreshedUser) {
+      // Store a user doc in the db if it doesn't exist
+      setUserId(refreshedUser.uid);
+    }
+  }, [refreshedUser]);
+
   return (
     <div>
       <Navbar />
@@ -34,7 +56,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/feed" element={<Feed />} />
+          <Route path="/feed" element={<Feed userId={userId} />} />
         </Routes>
       </BrowserRouter>
     </div>
