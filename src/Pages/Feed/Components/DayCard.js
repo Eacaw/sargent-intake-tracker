@@ -1,5 +1,7 @@
 import {
   collection,
+  doc,
+  getDoc,
   getDocs,
   getFirestore,
   query,
@@ -21,19 +23,70 @@ import {
   MDBModalHeader,
   MDBModalTitle,
   MDBRow,
+  MDBSpinner,
 } from "mdb-react-ui-kit";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import ConsumedItemInput from "./ConsumedItemInput";
 import DonutGraphRow from "./DonutGraphRow";
 import FoodItemBar from "./FoodItemBar";
+import { fetchFoodItemData } from "./utilities/data";
 import { iconMap } from "./utilities/icons";
 
 function DayCard(props) {
+  const [showSpinner, setShowSpinner] = useState(true);
   const date = new Date(props.card.date.seconds * 1000);
   const [basicModal, setBasicModal] = useState(false);
 
   const toggleShow = () => setBasicModal(!basicModal);
+
+  const [caloriesConsumed, setCaloriesConsumed] = useState(0);
+  const [carbsConsumed, setCarbsConsumed] = useState(0);
+  const [fatConsumed, setFatConsumed] = useState(0);
+  const [proteinConsumed, setProteinConsumed] = useState(0);
+
+  const [foodDataArr, setFoodDataArr] = useState([]);
+
+  async function setConsumedValues() {
+    let foodItemsData = [];
+    props.card.foodItems.forEach((foodItem) => {
+      fetchFoodItemData(foodItem.foodItemId).then((foodData) => {
+        foodItemsData.push(foodData);
+        if (foodItemsData.length == props.card.foodItems.length) {
+          setFoodDataArr(foodItemsData);
+          setShowSpinner(false);
+        }
+      });
+    });
+  }
+
+  useEffect(() => {
+    if (props.card && props.foodItems && showSpinner) {
+      setConsumedValues();
+    }
+  }, [props.card.foodItems, props.foodItems]);
+
+  useEffect(() => {
+    // console.log("arr:", foodDataArr);
+
+    let calories = 0;
+    let carbs = 0;
+    let fat = 0;
+    let protein = 0;
+
+    foodDataArr.forEach((foodItem) => {
+      console.log(foodItem);
+      calories += foodItem.calories;
+      carbs += foodItem.carbs;
+      fat += foodItem.fat;
+      protein += foodItem.protein;
+    });
+
+    setCaloriesConsumed(calories);
+    setCarbsConsumed(carbs);
+    setFatConsumed(fat);
+    setProteinConsumed(protein);
+  }, [foodDataArr]);
 
   const cardCollection = "day-card-data";
 
@@ -76,59 +129,73 @@ function DayCard(props) {
 
   return (
     <div className="margin-med" style={{ width: "90%" }}>
-      <MDBCard
-        border="primary
-      "
-      >
-        <MDBCardHeader>
-          <MDBCardTitle className="margin-sml">{getDateString()} </MDBCardTitle>
-        </MDBCardHeader>
-        <DonutGraphRow
-          foodItems={props.card.foodItems}
-          limits={props.limits.filter((limit) => limit.index === date.getDay())}
-        />
-        <MDBCardFooter>
-          <FoodItemBar key={"headerBar"} foodItem={foodItemHeaderBar} />
-          {props.card.foodItems &&
-            props.card.foodItems.map((foodItem, idx) => {
-              return <FoodItemBar key={idx} foodItem={foodItem} />;
-            })}
-          {/* Add new item bar */}
-          <MDBRow>
-            <MDBCol size="10">
-              {/* Empty column to force button right */}
-            </MDBCol>
-            <MDBCol size="2">
-              <MDBBtn color="success" onClick={toggleShow} floating>
-                <FaPlus />
-              </MDBBtn>
-            </MDBCol>
-          </MDBRow>
-          <MDBModal show={basicModal} setShow={setBasicModal} tabIndex="-1">
-            <MDBModalDialog>
-              <MDBModalContent>
-                <MDBModalHeader>
-                  <MDBModalTitle>Add new consumed item</MDBModalTitle>
-                  <MDBBtn
-                    className="btn-close"
-                    color="none"
-                    onClick={toggleShow}
-                  ></MDBBtn>
-                </MDBModalHeader>
-                <MDBModalBody>
-                  <ConsumedItemInput
-                    foodItems={props.foodItems}
-                    updateCardDoc={updateCardDoc}
-                    toggleShow={toggleShow}
-                  />{" "}
-                  {/* consumedItemInput */}
-                </MDBModalBody>
-
-                <MDBModalFooter></MDBModalFooter>
-              </MDBModalContent>
-            </MDBModalDialog>
-          </MDBModal>
-        </MDBCardFooter>
+      <MDBCard border="primary">
+        {showSpinner ? (
+          <MDBSpinner
+            className="mx-2 margin-lrg"
+            color="secondary"
+          ></MDBSpinner>
+        ) : (
+          <div>
+            <MDBCardHeader>
+              <MDBCardTitle className="margin-sml">
+                {getDateString()}{" "}
+              </MDBCardTitle>
+            </MDBCardHeader>
+            <DonutGraphRow
+              consumptionData={{
+                calories: caloriesConsumed,
+                carbs: carbsConsumed,
+                fat: fatConsumed,
+                protein: proteinConsumed,
+              }}
+              cardFoodItems={props.card.foodItems}
+              limits={props.limits.filter(
+                (limit) => limit.index === date.getDay()
+              )}
+            />
+            <MDBCardFooter>
+              <FoodItemBar key={"headerBar"} foodItem={foodItemHeaderBar} />
+              {props.card.foodItems &&
+                props.card.foodItems.map((foodItem, idx) => {
+                  return <FoodItemBar key={idx} foodItem={foodItem} />;
+                })}
+              {/* Add new item bar */}
+              <MDBRow>
+                <MDBCol size="10">
+                  {/* Empty column to force button right */}
+                </MDBCol>
+                <MDBCol size="2">
+                  <MDBBtn color="success" onClick={toggleShow} floating>
+                    <FaPlus />
+                  </MDBBtn>
+                </MDBCol>
+              </MDBRow>
+              <MDBModal show={basicModal} setShow={setBasicModal} tabIndex="-1">
+                <MDBModalDialog>
+                  <MDBModalContent>
+                    <MDBModalHeader>
+                      <MDBModalTitle>Add new consumed item</MDBModalTitle>
+                      <MDBBtn
+                        className="btn-close"
+                        color="none"
+                        onClick={toggleShow}
+                      ></MDBBtn>
+                    </MDBModalHeader>
+                    <MDBModalBody>
+                      <ConsumedItemInput
+                        foodItems={props.foodItems}
+                        updateCardDoc={updateCardDoc}
+                        toggleShow={toggleShow}
+                      />{" "}
+                      {/* consumedItemInput */}
+                    </MDBModalBody>
+                  </MDBModalContent>
+                </MDBModalDialog>
+              </MDBModal>
+            </MDBCardFooter>
+          </div>
+        )}
       </MDBCard>
     </div>
   );

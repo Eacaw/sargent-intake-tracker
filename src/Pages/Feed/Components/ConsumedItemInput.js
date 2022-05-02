@@ -153,17 +153,26 @@ function ConsumedItemInput(props) {
       </MDBRow>
       <MDBRow>
         <MDBCol size="12">
+          <br />
+        </MDBCol>
+      </MDBRow>
+      <MDBRow>
+        <MDBCol size="8"></MDBCol>
+        <MDBCol size="2">
           <MDBBtn
             floating
             color="success"
             onClick={() => {
               if (selected && selectedMeal) {
                 submitNewFoodItemToCard(selected);
+                props.toggleShow();
               }
             }}
           >
             <FaRegCheckCircle />
           </MDBBtn>
+        </MDBCol>
+        <MDBCol size="2">
           <MDBBtn floating color="danger" onClick={props.toggleShow}>
             <FaRegTimesCircle />
           </MDBBtn>
