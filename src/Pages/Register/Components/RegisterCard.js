@@ -6,6 +6,7 @@ import {
   MDBCardText,
   MDBCardTitle,
   MDBInput,
+  MDBSpinner,
 } from "mdb-react-ui-kit";
 import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
@@ -13,22 +14,22 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 function RegisterCard() {
   const [user] = useAuthState(getAuth());
-
+  const [showSpinner, setShowSpinner] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   function createNewUser() {
-    createUserWithEmailAndPassword(getAuth(), email, password)
-      .then((userCredential) => {
-        user = userCredential.user;
-      })
-      .catch((error) => {
+    setShowSpinner(true);
+    createUserWithEmailAndPassword(getAuth(), email, password).catch(
+      (error) => {
         if (error.code === "auth/email-already-in-use") {
           alert("Email already in use");
         } else {
           alert(error.message);
         }
-      });
+        setShowSpinner(false);
+      }
+    );
   }
 
   return (
@@ -41,44 +42,50 @@ function RegisterCard() {
         className="top-border-rounded"
       />
       <MDBCardBody>
-        <MDBCardTitle>Register</MDBCardTitle>
-        <MDBCardText>Please fill out your details:</MDBCardText>
-        <MDBInput
-          label="Email"
-          id="email"
-          onInput={(e) => {
-            setEmail(e.target.value);
-          }}
-          type="email"
-          className="margin-xsml"
-        />
-        <MDBInput
-          label="Password"
-          id="password"
-          onInput={(e) => {
-            setPassword(e.target.value);
-          }}
-          type="password"
-          className="margin-xsml"
-        />
-        <MDBBtn
-          rounded
-          size="sm"
-          color="primary"
-          onClick={createNewUser}
-          className="margin-xsml"
-        >
-          Register
-        </MDBBtn>
-        <MDBBtn
-          rounded
-          size="sm"
-          color="primary"
-          href="/login"
-          className="margin-xsml"
-        >
-          Login
-        </MDBBtn>
+        {showSpinner ? (
+          <MDBSpinner size="sm" />
+        ) : (
+          <>
+            <MDBCardTitle>Register</MDBCardTitle>
+            <MDBCardText>Please fill out your details:</MDBCardText>
+            <MDBInput
+              label="Email"
+              id="email"
+              onInput={(e) => {
+                setEmail(e.target.value);
+              }}
+              type="email"
+              className="margin-xsml"
+            />
+            <MDBInput
+              label="Password"
+              id="password"
+              onInput={(e) => {
+                setPassword(e.target.value);
+              }}
+              type="password"
+              className="margin-xsml"
+            />
+            <MDBBtn
+              rounded
+              size="sm"
+              color="primary"
+              onClick={createNewUser}
+              className="margin-xsml"
+            >
+              Register
+            </MDBBtn>
+            <MDBBtn
+              rounded
+              size="sm"
+              color="primary"
+              href="/login"
+              className="margin-xsml"
+            >
+              Go Back
+            </MDBBtn>
+          </>
+        )}
       </MDBCardBody>
     </MDBCard>
   );
