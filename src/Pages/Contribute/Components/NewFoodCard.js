@@ -3,12 +3,14 @@ import {
   MDBBtn,
   MDBCard,
   MDBCardBody,
+  MDBCardFooter,
   MDBCardHeader,
   MDBCardTitle,
   MDBInput,
   MDBSpinner,
 } from "mdb-react-ui-kit";
 import React, { useEffect, useRef, useState } from "react";
+import nutritionix_small from "./nutritionix_small.png";
 
 function NewFoodCard(props) {
   const nameRef = useRef();
@@ -105,6 +107,15 @@ function NewFoodCard(props) {
               {isNotUnique ? "Please use a unique name" : "Submit"}
             </MDBBtn>
           </MDBCardBody>
+          <MDBCardFooter style={{ textAlign: "center" }}>
+            Helpful resources:
+            <img
+              src={nutritionix_small}
+              alt="nutritionix logo"
+              href="https://www.nutritionix.com/"
+              width="90%"
+            />
+          </MDBCardFooter>
         </MDBCardHeader>
       </MDBCard>
     </div>
