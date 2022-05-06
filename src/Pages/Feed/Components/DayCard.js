@@ -1,7 +1,5 @@
 import {
   collection,
-  doc,
-  getDoc,
   getDocs,
   getFirestore,
   query,
@@ -19,7 +17,6 @@ import {
   MDBModalBody,
   MDBModalContent,
   MDBModalDialog,
-  MDBModalFooter,
   MDBModalHeader,
   MDBModalTitle,
   MDBRow,
@@ -54,28 +51,27 @@ function DayCard(props) {
         foodItemsData.push(foodData);
         if (foodItemsData.length == props.card.foodItems.length) {
           setFoodDataArr(foodItemsData);
-          setShowSpinner(false);
         }
       });
     });
   }
 
   useEffect(() => {
-    if (props.card && props.foodItems && showSpinner) {
-      setConsumedValues();
+    if (props.card && showSpinner) {
+      if (props.card.foodItems.length > 0) {
+        setConsumedValues();
+      }
+      setShowSpinner(false);
     }
   }, [props.card.foodItems, props.foodItems]);
 
   useEffect(() => {
-    // console.log("arr:", foodDataArr);
-
     let calories = 0;
     let carbs = 0;
     let fat = 0;
     let protein = 0;
 
     foodDataArr.forEach((foodItem) => {
-      console.log(foodItem);
       calories += foodItem.calories;
       carbs += foodItem.carbs;
       fat += foodItem.fat;

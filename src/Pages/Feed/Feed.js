@@ -7,11 +7,12 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { MDBCol, MDBRow, MDBSpinner } from "mdb-react-ui-kit";
+import { MDBCol, MDBRow, MDBSpinner, MDBTypography } from "mdb-react-ui-kit";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import DayCard from "./Components/DayCard";
+import AddTodayNote from "./Components/AddTodayNote";
 
 function Feed(props) {
   const [showSpinner, setShowSpinner] = useState(true);
@@ -33,9 +34,20 @@ function Feed(props) {
   const [limits] = useCollectionData(q2);
   const [foodItems] = useCollectionData(q3);
 
+  const [topDate, setTopDate] = useState(false);
+  let todayWithTime = new Date();
+  let today = new Date(
+    todayWithTime.getFullYear(),
+    todayWithTime.getMonth(),
+    todayWithTime.getDate()
+  );
+
   // Handle showing a spinner when still loading data
   useEffect(() => {
     if (cards && foodItems && limits) {
+      if (cards[0] && cards[0].date.seconds === today.getTime() / 1000) {
+        setTopDate(true);
+      }
       setShowSpinner(false);
     }
   }, [cards, foodItems, limits]);
@@ -45,23 +57,26 @@ function Feed(props) {
       <MDBSpinner className="mx-2 margin-lrg" color="secondary"></MDBSpinner>
     </div>
   ) : (
-    <div className="center-align-cards">
-      <MDBRow>
-        {cards &&
-          cards.map((card, idx) => {
-            return (
-              <MDBCol key={idx} size="12">
-                <DayCard
-                  key={idx}
-                  userId={props.userId}
-                  card={card}
-                  limits={limits}
-                  foodItems={foodItems}
-                />
-              </MDBCol>
-            );
-          })}
-      </MDBRow>
+    <div>
+      <div>{topDate ? null : <AddTodayNote userId={props.userId} />}</div>
+      <div className="center-align-cards">
+        <MDBRow>
+          {cards &&
+            cards.map((card, idx) => {
+              return (
+                <MDBCol key={idx} size="12">
+                  <DayCard
+                    key={idx}
+                    userId={props.userId}
+                    card={card}
+                    limits={limits}
+                    foodItems={foodItems}
+                  />
+                </MDBCol>
+              );
+            })}
+        </MDBRow>
+      </div>
     </div>
   );
 }
