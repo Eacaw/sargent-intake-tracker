@@ -11,20 +11,30 @@ import { BiTrash } from "react-icons/bi";
 
 function FoodItemBar(props) {
   const [foodItemData, setFoodItemData] = useState({});
+  const [backgroundColor, setBackgroundColor] = useState("light");
+  const [foodIcon, setFoodIcon] = useState("⚪");
 
   useEffect(() => {
-    fetchFoodItemData(props.foodItem.foodItemId).then((foodItemData) => {
-      setFoodItemData(foodItemData);
-    });
+    if (!props.foodItemData) {
+      fetchFoodItemData(props.foodItem.foodItemId).then((foodItemData) => {
+        setFoodItemData(foodItemData);
+        setBackgroundColor(props.foodItem.colour);
+        setFoodIcon(props.foodItem.icon);
+      });
+    } else {
+      setFoodItemData(props.foodItemData);
+      setBackgroundColor(props.foodItemData.colour);
+    }
   }, []);
 
   const isHeaderBar = foodItemData.name === "Name";
+  const disableTrashCan = props.disableTrashCan || isHeaderBar;
 
   return (
     <MDBRow>
-      <MDBCol size="11" className="g-0">
+      <MDBCol size={props.disableTrashCan ? 12 : 11} className="g-0">
         <MDBCard
-          background={props.foodItem.colour}
+          background={backgroundColor}
           className="text-white mb-3"
           style={{
             width: "100%",
@@ -36,15 +46,24 @@ function FoodItemBar(props) {
           <MDBRow
             style={{
               textAlign: "left",
-              margin: "2px",
+              margin: "4px",
               verticalAlign: "middle",
               fontSize: "13px",
             }}
           >
             <MDBCol size="6">
               <MDBRow>
-                <MDBCol size="2">{props.foodItem.icon}</MDBCol>
-                <MDBCol size="10">{foodItemData.name}</MDBCol>
+                <MDBCol size="2">{foodIcon}</MDBCol>
+                <MDBCol
+                  size="10"
+                  style={{
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                  }}
+                >
+                  {foodItemData.name}
+                </MDBCol>
               </MDBRow>
             </MDBCol>
             <MDBCol size="6">
@@ -67,7 +86,7 @@ function FoodItemBar(props) {
         </MDBCard>
       </MDBCol>
       <MDBCol size="1" className="g-0">
-        {isHeaderBar ? null : <BiTrash style={{ marginLeft: "5px" }} />}
+        {disableTrashCan ? null : <BiTrash style={{ marginLeft: "5px" }} />}
       </MDBCol>
     </MDBRow>
   );
