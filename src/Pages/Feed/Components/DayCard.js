@@ -125,7 +125,7 @@ function DayCard(props) {
 
   return (
     <div className="margin-med" style={{ width: "90%" }}>
-      <MDBCard border="primary">
+      <MDBCard border="1px solid #e0e0e0">
         {showSpinner ? (
           <MDBSpinner
             className="mx-2 margin-lrg"
