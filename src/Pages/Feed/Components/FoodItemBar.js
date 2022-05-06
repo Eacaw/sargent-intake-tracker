@@ -22,7 +22,7 @@ function FoodItemBar(props) {
   }, []);
 
   function onDeleteFoodItem() {
-    props.deleteFoodItem(props.index);
+    props.deleteFoodItemFromCard(props.index);
   }
 
   const isHeaderBar = foodItemData.name === "Name";

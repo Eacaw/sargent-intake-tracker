@@ -33,6 +33,7 @@ import { iconMap } from "./utilities/icons";
 
 function DayCard(props) {
   const [showSpinner, setShowSpinner] = useState(true);
+  const [showFoodSpinner, setShowFoodSpinner] = useState(false);
   const date = new Date(props.card.date.seconds * 1000);
   const [basicModal, setBasicModal] = useState(false);
 
@@ -44,9 +45,11 @@ function DayCard(props) {
   const [proteinConsumed, setProteinConsumed] = useState(0);
 
   const [foodDataArr, setFoodDataArr] = useState([]);
+  const [foodData, setFoodData] = useState([]);
 
   async function setConsumedValues() {
     let foodItemsData = [];
+
     props.card.foodItems.forEach((foodItem) => {
       fetchFoodItemData(foodItem.foodItemId).then((foodData) => {
         foodItemsData.push(foodData);
@@ -129,7 +132,9 @@ function DayCard(props) {
       const currentCardSnapshot = await getDocs(q);
       if (currentCardSnapshot) {
         currentCardSnapshot.forEach(async (doc) => {
-          await updateDoc(doc.ref, newCard);
+          await updateDoc(doc.ref, newCard).then(() => {
+            setShowFoodSpinner(false);
+          });
         });
       }
     } catch (error) {
@@ -138,7 +143,7 @@ function DayCard(props) {
   }
 
   function deleteFoodItemFromCard(key) {
-    setShowSpinner(true);
+    setShowFoodSpinner(true);
     const removedItem = props.card.foodItems.splice(key, 1);
 
     const newFoodItems = [];
@@ -152,7 +157,6 @@ function DayCard(props) {
     let newCard = { ...props.card, foodItems: newFoodItems };
     console.log(newCard);
     updateCardDocRemoved(newCard);
-    setShowSpinner(false);
   }
 
   return (
@@ -184,17 +188,23 @@ function DayCard(props) {
             />
             <MDBCardFooter>
               <FoodItemBar key={"headerBar"} foodItem={foodItemHeaderBar} />
-              {props.card.foodItems &&
-                props.card.foodItems.map((foodItem, idx) => {
+              {showFoodSpinner ? (
+                <MDBSpinner
+                  className="mx-2 margin-lrg"
+                  color="secondary"
+                ></MDBSpinner>
+              ) : (
+                props.card.foodItems.map((foodItem, key) => {
                   return (
                     <FoodItemBar
-                      key={idx}
-                      index={idx}
+                      key={key}
+                      index={key}
                       foodItem={foodItem}
-                      deleteFoodItem={deleteFoodItemFromCard}
+                      deleteFoodItemFromCard={deleteFoodItemFromCard}
                     />
                   );
-                })}
+                })
+              )}
               {/* Add new item bar */}
               <MDBRow>
                 <MDBCol size="10">
