@@ -25,6 +25,8 @@ function RegisterCard() {
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
           alert("Email already in use");
+        } else {
+          alert(error.message);
         }
       });
   }
