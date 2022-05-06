@@ -57,26 +57,28 @@ function Feed(props) {
       <MDBSpinner className="mx-2 margin-lrg" color="secondary"></MDBSpinner>
     </div>
   ) : (
-    <div>
-      <div>{topDate ? null : <AddTodayNote userId={props.userId} />}</div>
-      <div className="center-align-cards">
-        <MDBRow>
-          {cards &&
-            cards.map((card, idx) => {
-              return (
-                <MDBCol key={idx} size="12">
-                  <DayCard
-                    key={idx}
-                    userId={props.userId}
-                    card={card}
-                    limits={limits}
-                    foodItems={foodItems}
-                  />
-                </MDBCol>
-              );
-            })}
-        </MDBRow>
-      </div>
+    <div className="center-align-cards">
+      <MDBRow>
+        {topDate ? null : (
+          <MDBCol size="12">
+            <AddTodayNote userId={props.userId} />
+          </MDBCol>
+        )}
+        {cards &&
+          cards.map((card, idx) => {
+            return (
+              <MDBCol key={idx} size="12">
+                <DayCard
+                  key={card.date.seconds}
+                  userId={props.userId}
+                  card={card}
+                  limits={limits}
+                  foodItems={foodItems}
+                />
+              </MDBCol>
+            );
+          })}
+      </MDBRow>
     </div>
   );
 }
