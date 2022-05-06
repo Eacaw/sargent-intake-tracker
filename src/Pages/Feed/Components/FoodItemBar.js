@@ -1,13 +1,7 @@
-import {
-  MDBCard,
-  MDBCol,
-  MDBRow,
-  MDBTable,
-  MDBTableBody,
-} from "mdb-react-ui-kit";
+import { MDBCard, MDBCol, MDBRow } from "mdb-react-ui-kit";
 import React, { useEffect, useState } from "react";
-import { fetchFoodItemData } from "./utilities/data";
 import { BiTrash } from "react-icons/bi";
+import { fetchFoodItemData } from "./utilities/data";
 
 function FoodItemBar(props) {
   const [foodItemData, setFoodItemData] = useState({});
@@ -26,6 +20,10 @@ function FoodItemBar(props) {
       setBackgroundColor(props.foodItemData.colour);
     }
   }, []);
+
+  function onDeleteFoodItem() {
+    props.deleteFoodItem(props.index);
+  }
 
   const isHeaderBar = foodItemData.name === "Name";
   const disableTrashCan = props.disableTrashCan || isHeaderBar;
@@ -86,7 +84,9 @@ function FoodItemBar(props) {
         </MDBCard>
       </MDBCol>
       <MDBCol size="1" className="g-0">
-        {disableTrashCan ? null : <BiTrash style={{ marginLeft: "5px" }} />}
+        {disableTrashCan ? null : (
+          <BiTrash style={{ marginLeft: "5px" }} onClick={onDeleteFoodItem} />
+        )}
       </MDBCol>
     </MDBRow>
   );

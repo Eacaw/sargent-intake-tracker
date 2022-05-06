@@ -4,6 +4,7 @@ import {
   getFirestore,
   query,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import {
@@ -123,6 +124,37 @@ function DayCard(props) {
     colour: "primary",
   };
 
+  async function updateCardDocRemoved(newCard) {
+    try {
+      const currentCardSnapshot = await getDocs(q);
+      if (currentCardSnapshot) {
+        currentCardSnapshot.forEach(async (doc) => {
+          await updateDoc(doc.ref, newCard);
+        });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  function deleteFoodItemFromCard(key) {
+    setShowSpinner(true);
+    const removedItem = props.card.foodItems.splice(key, 1);
+
+    const newFoodItems = [];
+
+    props.card.foodItems.forEach((foodItem) => {
+      if (foodItem !== removedItem[0]) {
+        newFoodItems.push(foodItem);
+      }
+    });
+
+    let newCard = { ...props.card, foodItems: newFoodItems };
+    console.log(newCard);
+    updateCardDocRemoved(newCard);
+    setShowSpinner(false);
+  }
+
   return (
     <div className="margin-med" style={{ width: "90%" }}>
       <MDBCard border="1px solid #e0e0e0">
@@ -154,7 +186,14 @@ function DayCard(props) {
               <FoodItemBar key={"headerBar"} foodItem={foodItemHeaderBar} />
               {props.card.foodItems &&
                 props.card.foodItems.map((foodItem, idx) => {
-                  return <FoodItemBar key={idx} foodItem={foodItem} />;
+                  return (
+                    <FoodItemBar
+                      key={idx}
+                      index={idx}
+                      foodItem={foodItem}
+                      deleteFoodItem={deleteFoodItemFromCard}
+                    />
+                  );
                 })}
               {/* Add new item bar */}
               <MDBRow>

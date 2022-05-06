@@ -1,18 +1,15 @@
-import { getAuth } from "firebase/auth";
 import {
   collection,
   getFirestore,
-  onSnapshot,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
-import { MDBCol, MDBRow, MDBSpinner, MDBTypography } from "mdb-react-ui-kit";
+import { MDBCol, MDBRow, MDBSpinner } from "mdb-react-ui-kit";
 import React, { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import DayCard from "./Components/DayCard";
 import AddTodayNote from "./Components/AddTodayNote";
+import DayCard from "./Components/DayCard";
 
 function Feed(props) {
   const [showSpinner, setShowSpinner] = useState(true);
