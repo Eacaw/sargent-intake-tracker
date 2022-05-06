@@ -1,5 +1,5 @@
 import { MDBBtn, MDBCol, MDBRow } from "mdb-react-ui-kit";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { iconMap } from "./utilities/icons";
 import Select from "react-select";
 import {
@@ -14,6 +14,8 @@ import { FaPlus, FaRegCheckCircle, FaRegTimesCircle } from "react-icons/fa";
 function ConsumedItemInput(props) {
   const [selectedMeal, setSelectedMeal] = useState("");
   const [selected, setSelected] = useState(null);
+
+  const reactSelectRef = useRef(null);
 
   const options = [];
 
@@ -61,6 +63,7 @@ function ConsumedItemInput(props) {
     });
     setSelected(null);
     setSelectedMeal("");
+    reactSelectRef.current.setValue("");
   }
 
   async function getFoodItemId(foodItemName) {
@@ -144,6 +147,7 @@ function ConsumedItemInput(props) {
       <MDBRow>
         <MDBCol size="12">
           <Select
+            ref={reactSelectRef}
             options={options}
             onChange={(event) => {
               setSelected(event.value);
