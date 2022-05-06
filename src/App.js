@@ -1,7 +1,7 @@
 import "./App.css";
 
 // Pages Import
-import { Login, Feed, Home, Register } from "./Pages/Pages";
+import { Login, Feed, Home, Register, Contribute } from "./Pages/Pages";
 
 // Common Components Imports
 import Navbar from "./Components/Navbar";
@@ -57,6 +57,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/feed" element={<Feed userId={userId} />} />
+          <Route path="/add-new-food" element={<Contribute />} />
         </Routes>
       </BrowserRouter>
     </div>
