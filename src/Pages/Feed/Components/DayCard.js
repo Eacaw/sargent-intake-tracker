@@ -24,28 +24,31 @@ import {
   MDBSpinner,
 } from "mdb-react-ui-kit";
 import React, { useEffect, useState } from "react";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 import { FaPlus } from "react-icons/fa";
 import ConsumedItemInput from "./ConsumedItemInput";
 import DonutGraphRow from "./DonutGraphRow";
 import FoodItemBar from "./FoodItemBar";
 import { fetchFoodItemData } from "./utilities/data";
 import { iconMap } from "./utilities/icons";
+import Spinner from "../../../Components/Spinner";
 
 function DayCard(props) {
+  // Spinners
   const [showSpinner, setShowSpinner] = useState(true);
   const [showFoodSpinner, setShowFoodSpinner] = useState(false);
-  const date = new Date(props.card.date.seconds * 1000);
+  const [showConsumedSpinner, setShowConsumedSpinner] = useState(false);
+  // Modal
   const [basicModal, setBasicModal] = useState(false);
-
   const toggleShow = () => setBasicModal(!basicModal);
-
+  // Data
   const [caloriesConsumed, setCaloriesConsumed] = useState(0);
   const [carbsConsumed, setCarbsConsumed] = useState(0);
   const [fatConsumed, setFatConsumed] = useState(0);
   const [proteinConsumed, setProteinConsumed] = useState(0);
-
   const [foodDataArr, setFoodDataArr] = useState([]);
-  const [foodData, setFoodData] = useState([]);
+
+  const date = new Date(props.card.date.seconds * 1000);
 
   async function setConsumedValues() {
     let foodItemsData = [];
@@ -67,7 +70,7 @@ function DayCard(props) {
       }
       setShowSpinner(false);
     }
-  }, [props.card.foodItems, props.foodItems]);
+  }, [props.card, props.foodItems]);
 
   useEffect(() => {
     let calories = 0;
@@ -97,6 +100,32 @@ function DayCard(props) {
     where("userId", "==", props.userId),
     where("date", "==", props.card.date)
   );
+
+  const [cardData] = useCollectionData(q);
+
+  useEffect(() => {
+    setShowConsumedSpinner(true);
+    if (cardData) {
+      setConsumedValues();
+      let calories = 0;
+      let carbs = 0;
+      let fat = 0;
+      let protein = 0;
+
+      foodDataArr.forEach((foodItem) => {
+        calories += foodItem.calories;
+        carbs += foodItem.carbs;
+        fat += foodItem.fat;
+        protein += foodItem.protein;
+      });
+
+      setCaloriesConsumed(calories);
+      setCarbsConsumed(carbs);
+      setFatConsumed(fat);
+      setProteinConsumed(protein);
+    }
+    setShowConsumedSpinner(false);
+  }, [cardData]);
 
   async function updateCardDoc(newConsumedItem) {
     let currentCardSnapshot;
@@ -134,6 +163,7 @@ function DayCard(props) {
         currentCardSnapshot.forEach(async (doc) => {
           await updateDoc(doc.ref, newCard).then(() => {
             setShowFoodSpinner(false);
+            setShowConsumedSpinner(false);
           });
         });
       }
@@ -143,6 +173,7 @@ function DayCard(props) {
   }
 
   function deleteFoodItemFromCard(key) {
+    setShowConsumedSpinner(true);
     setShowFoodSpinner(true);
     const removedItem = props.card.foodItems.splice(key, 1);
 
@@ -155,7 +186,6 @@ function DayCard(props) {
     });
 
     let newCard = { ...props.card, foodItems: newFoodItems };
-    console.log(newCard);
     updateCardDocRemoved(newCard);
   }
 
@@ -163,10 +193,7 @@ function DayCard(props) {
     <div className="margin-med" style={{ width: "90%" }}>
       <MDBCard border="1px solid #e0e0e0">
         {showSpinner ? (
-          <MDBSpinner
-            className="mx-2 margin-lrg"
-            color="secondary"
-          ></MDBSpinner>
+          <Spinner />
         ) : (
           <div>
             <MDBCardHeader>
@@ -174,25 +201,26 @@ function DayCard(props) {
                 {getDateString()}{" "}
               </MDBCardTitle>
             </MDBCardHeader>
-            <DonutGraphRow
-              consumptionData={{
-                calories: caloriesConsumed,
-                carbs: carbsConsumed,
-                fat: fatConsumed,
-                protein: proteinConsumed,
-              }}
-              cardFoodItems={props.card.foodItems}
-              limits={props.limits.filter(
-                (limit) => limit.index === date.getDay()
-              )}
-            />
+            {showConsumedSpinner ? (
+              <Spinner />
+            ) : (
+              <DonutGraphRow
+                consumptionData={{
+                  calories: caloriesConsumed,
+                  carbs: carbsConsumed,
+                  fat: fatConsumed,
+                  protein: proteinConsumed,
+                }}
+                cardFoodItems={props.card.foodItems}
+                limits={props.limits.filter(
+                  (limit) => limit.index === date.getDay()
+                )}
+              />
+            )}
             <MDBCardFooter>
               <FoodItemBar key={"headerBar"} foodItem={foodItemHeaderBar} />
               {showFoodSpinner ? (
-                <MDBSpinner
-                  className="mx-2 margin-lrg"
-                  color="secondary"
-                ></MDBSpinner>
+                <Spinner />
               ) : (
                 props.card.foodItems.map((foodItem, key) => {
                   return (
