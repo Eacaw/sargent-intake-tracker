@@ -109,12 +109,9 @@ function NewFoodCard(props) {
           </MDBCardBody>
           <MDBCardFooter style={{ textAlign: "center" }}>
             Helpful resources:
-            <img
-              src={nutritionix_small}
-              alt="nutritionix logo"
-              href="https://www.nutritionix.com/"
-              width="90%"
-            />
+            <a href="https://www.nutritionix.com/" target="_blank">
+              <img src={nutritionix_small} alt="nutritionix logo" width="90%" />
+            </a>
           </MDBCardFooter>
         </MDBCardHeader>
       </MDBCard>
