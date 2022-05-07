@@ -19,11 +19,7 @@ import { iconMap } from "../../Feed/Components/utilities/icons";
 
 function AllFoodList(props) {
   const db = getFirestore();
-  const q = query(
-    collection(db, "food-items"),
-    orderBy("name", "asc"),
-    limit(50)
-  );
+  const q = query(collection(db, "food-items"), orderBy("name", "asc"));
   const [allFoodItems] = useCollectionData(q);
 
   useEffect(() => {
