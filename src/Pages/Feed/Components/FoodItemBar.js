@@ -1,12 +1,14 @@
-import { MDBCard, MDBCol, MDBRow } from "mdb-react-ui-kit";
+import { MDBCard, MDBCol, MDBRow, MDBTooltip } from "mdb-react-ui-kit";
 import React, { useEffect, useState } from "react";
 import { BiTrash } from "react-icons/bi";
+import Spinner from "../../../Components/Spinner";
 import { fetchFoodItemData } from "./utilities/data";
 
 function FoodItemBar(props) {
   const [foodItemData, setFoodItemData] = useState({});
   const [backgroundColor, setBackgroundColor] = useState("light");
   const [foodIcon, setFoodIcon] = useState("⚪");
+  const [showSpinner, setShowSpinner] = useState(true);
 
   useEffect(() => {
     if (!props.foodItemData) {
@@ -19,6 +21,7 @@ function FoodItemBar(props) {
       setFoodItemData(props.foodItemData);
       setBackgroundColor(props.foodItemData.colour);
     }
+    setShowSpinner(false);
   }, []);
 
   function onDeleteFoodItem() {
@@ -41,46 +44,50 @@ function FoodItemBar(props) {
             verticalAlign: "middle",
           }}
         >
-          <MDBRow
-            style={{
-              textAlign: "left",
-              margin: "4px",
-              verticalAlign: "middle",
-              fontSize: "13px",
-            }}
-          >
-            <MDBCol size="6">
-              <MDBRow>
-                <MDBCol size="2">{foodIcon}</MDBCol>
-                <MDBCol
-                  size="10"
-                  style={{
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                  }}
-                >
-                  {foodItemData.name}
-                </MDBCol>
-              </MDBRow>
-            </MDBCol>
-            <MDBCol size="6">
-              <MDBRow>
-                <MDBCol size="3" className="g-0">
-                  {foodItemData.protein}
-                </MDBCol>
-                <MDBCol size="3" className="g-0">
-                  {foodItemData.carbs}
-                </MDBCol>
-                <MDBCol size="3" className="g-0">
-                  {foodItemData.fat}
-                </MDBCol>
-                <MDBCol size="3" className="g-0">
-                  {foodItemData.calories}
-                </MDBCol>
-              </MDBRow>
-            </MDBCol>
-          </MDBRow>
+          {showSpinner ? (
+            <Spinner />
+          ) : (
+            <MDBRow
+              style={{
+                textAlign: "left",
+                margin: "4px",
+                verticalAlign: "middle",
+                fontSize: "13px",
+              }}
+            >
+              <MDBCol size="6">
+                <MDBRow>
+                  <MDBCol size="2">{foodIcon}</MDBCol>
+                  <MDBCol
+                    size="10"
+                    style={{
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {foodItemData.name}
+                  </MDBCol>
+                </MDBRow>
+              </MDBCol>
+              <MDBCol size="6">
+                <MDBRow>
+                  <MDBCol size="3" className="g-0">
+                    {foodItemData.protein}
+                  </MDBCol>
+                  <MDBCol size="3" className="g-0">
+                    {foodItemData.carbs}
+                  </MDBCol>
+                  <MDBCol size="3" className="g-0">
+                    {foodItemData.fat}
+                  </MDBCol>
+                  <MDBCol size="3" className="g-0">
+                    {foodItemData.calories}
+                  </MDBCol>
+                </MDBRow>
+              </MDBCol>
+            </MDBRow>
+          )}
         </MDBCard>
       </MDBCol>
       <MDBCol size="1" className="g-0">

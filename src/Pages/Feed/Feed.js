@@ -5,9 +5,10 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { MDBCol, MDBRow, MDBSpinner } from "mdb-react-ui-kit";
+import { MDBCol, MDBRow } from "mdb-react-ui-kit";
 import React, { useEffect, useState } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import Spinner from "../../Components/Spinner";
 import AddTodayNote from "./Components/AddTodayNote";
 import DayCard from "./Components/DayCard";
 
@@ -50,9 +51,7 @@ function Feed(props) {
   }, [cards, foodItems, limits]);
 
   return showSpinner ? (
-    <div className="center-align-cards">
-      <MDBSpinner className="mx-2 margin-lrg" color="secondary"></MDBSpinner>
-    </div>
+    <Spinner />
   ) : (
     <div className="center-align-cards">
       <MDBRow>
@@ -69,6 +68,7 @@ function Feed(props) {
                   key={card.date.seconds}
                   userId={props.userId}
                   card={card}
+                  cards={cards}
                   limits={limits}
                   foodItems={foodItems}
                 />
@@ -81,9 +81,3 @@ function Feed(props) {
 }
 
 export default Feed;
-
-// /user-data/jqSgLtPb50YRzDtkh4iCvhm3j2x1
-
-// /food-items/Tm6RrlsDnbv8JAzpf5nS
-// /food-items/NXYhREAYJ7BDTsrF5nzH
-// /food-items/gXebrlCSMI3kPQVZqSal
