@@ -11,8 +11,11 @@ import {
 } from "mdb-react-ui-kit";
 import React, { useEffect, useRef, useState } from "react";
 import nutritionix_small from "./nutritionix_small.png";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 function NewFoodCard(props) {
+  const analytics = getAnalytics();
+
   const nameRef = useRef();
   const proteinInput = useRef();
   const carbsInput = useRef();
@@ -41,12 +44,17 @@ function NewFoodCard(props) {
   }
 
   async function addNewFoodItemDoc() {
-    const newFoodRef = await addDoc(foodItemsRef, {
+    const newFoodItem = {
       name,
       protein: parseFloat(proteinInput.current.value),
       carbs: parseFloat(carbsInput.current.value),
       fat: parseFloat(fatInput.current.value),
       calories: parseFloat(caloriesInput.current.value),
+    };
+    await addDoc(foodItemsRef, newFoodItem);
+    logEvent(analytics, "New_Food_Added", {
+      user: props.userId,
+      foodItem: newFoodItem,
     });
     proteinInput.current.value = null;
     carbsInput.current.value = null;

@@ -32,8 +32,11 @@ import FoodItemBar from "./FoodItemBar";
 import { fetchFoodItemData } from "./utilities/data";
 import { iconMap } from "./utilities/icons";
 import Spinner from "../../../Components/Spinner";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 function DayCard(props) {
+  const analytics = getAnalytics();
+
   // Spinners
   const [showSpinner, setShowSpinner] = useState(true);
   const [showFoodSpinner, setShowFoodSpinner] = useState(false);
@@ -137,6 +140,7 @@ function DayCard(props) {
           foodItems: [...doc.data().foodItems, newConsumedItem],
         });
       });
+      logEvent(analytics, "Food_Item_Added", { user: props.userId });
     } catch (error) {
       console.log(error);
     }
@@ -167,6 +171,7 @@ function DayCard(props) {
           });
         });
       }
+      logEvent(analytics, "Food_Item_Removed", { user: props.userId });
     } catch (error) {
       console.log(error.message);
     }

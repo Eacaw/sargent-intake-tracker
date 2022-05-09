@@ -6,12 +6,15 @@ import {
   getFirestore,
   serverTimestamp,
 } from "firebase/firestore";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 function AddTodayNote(props) {
   const db = getFirestore();
+  const analytics = getAnalytics();
 
   async function onAddTodayNote(e) {
     e.preventDefault();
+    logEvent(analytics, "Day_Card_Added", { user: props.userId });
     let todayWithTime = new Date();
     let today = new Date(
       todayWithTime.getFullYear(),
